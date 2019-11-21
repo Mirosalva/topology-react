@@ -86,8 +86,8 @@ class Headers extends React.Component<{ canvasData: any }> {
           </Menu.Item>
           <SubMenu title="文件" className={styles.item}>
             <Menu.Item key="new" className={styles.subTtem}>新建文件</Menu.Item>
-            <Menu.Item key="open" className={styles.subTtem}>打开本地文件（新建）</Menu.Item>
-            <Menu.Item key="replace" className={styles.subTtem}>导入本地文件...</Menu.Item>
+            <Menu.Item key="open" className={styles.subTtem}>打开本地文件（暂不可用）</Menu.Item>
+            <Menu.Item key="replace" className={styles.subTtem}>导入本地文件</Menu.Item>
             <Menu.Divider>{}</Menu.Divider>
             <Menu.Item key="save" className={styles.subTtem}>保存到本地</Menu.Item>
             <Menu.Item key="savePng" className={styles.subTtem}>下载为PNG</Menu.Item>
@@ -101,32 +101,32 @@ class Headers extends React.Component<{ canvasData: any }> {
             <Menu.Item key="cut" className={styles.subTtem}>剪切</Menu.Item>
             <Menu.Item key="parse" className={styles.subTtem}>粘贴</Menu.Item>
           </SubMenu>
-          <SubMenu title="社区" className={styles.item}>
-            <Menu.Item className={styles.subTtem} key="about">
-              咨询与建议
-            </Menu.Item>
-            <Menu.Item className={styles.subTtem}>
-              <a href="https://github.com/le5le-com" target="_blank">
-                开源Github
-              </a>
-            </Menu.Item>
-            <Menu.Item className={styles.subTtem}>
-              <a href="https://www.yuque.com/alsmile/topology" target="_blank">
-                开发文档
-              </a>
-            </Menu.Item>
-          </SubMenu>
-          <SubMenu title="帮助" className={styles.item}>
-            <Menu.Item className={styles.subTtem}>
-              <a href="http://topology.le5le.com" target="_blank">
-                在线官网
-              </a>
-            </Menu.Item>
-            <Menu.Item className={styles.subTtem} key="license">许可与申明</Menu.Item>
-            <Menu.Item className={styles.subTtem} key="joinin">资助与加入</Menu.Item>
-            <Menu.Divider />
-            <Menu.Item className={styles.subTtem} key="about">关于</Menu.Item>
-          </SubMenu>
+          {/*<SubMenu title="社区" className={styles.item}>*/}
+          {/*  <Menu.Item className={styles.subTtem} key="about">*/}
+          {/*    咨询与建议*/}
+          {/*  </Menu.Item>*/}
+          {/*  <Menu.Item className={styles.subTtem}>*/}
+          {/*    <a href="https://github.com/le5le-com" target="_blank">*/}
+          {/*      开源Github*/}
+          {/*    </a>*/}
+          {/*  </Menu.Item>*/}
+          {/*  <Menu.Item className={styles.subTtem}>*/}
+          {/*    <a href="https://www.yuque.com/alsmile/topology" target="_blank">*/}
+          {/*      开发文档*/}
+          {/*    </a>*/}
+          {/*  </Menu.Item>*/}
+          {/*</SubMenu>*/}
+          {/*<SubMenu title="帮助" className={styles.item}>*/}
+          {/*  <Menu.Item className={styles.subTtem}>*/}
+          {/*    <a href="http://topology.le5le.com" target="_blank">*/}
+          {/*      在线官网*/}
+          {/*    </a>*/}
+          {/*  </Menu.Item>*/}
+          {/*  <Menu.Item className={styles.subTtem} key="license">许可与申明</Menu.Item>*/}
+          {/*  <Menu.Item className={styles.subTtem} key="joinin">资助与加入</Menu.Item>*/}
+          {/*  <Menu.Divider />*/}
+          {/*  <Menu.Item className={styles.subTtem} key="about">关于</Menu.Item>*/}
+          {/*</SubMenu>*/}
           <div className={styles.full} />
           <Menu.Item className={styles.right}>
             <div>视图：{scale}%</div>

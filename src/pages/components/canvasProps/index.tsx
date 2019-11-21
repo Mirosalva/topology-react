@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, InputNumber } from 'antd';
+import { Form, InputNumber,Input } from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 
 import { Node } from 'topology-core/models/node';
@@ -24,6 +24,7 @@ class CanvasProps extends Component<CanvasPropsProps> {
     multi: this.props.data.multi,
   };
 
+  // 当前state中node与父组件传参不同步时，重新渲染
   componentDidUpdate() {
     if (this.state.node !== this.props.data.node || this.state.line !== this.props.data.line || this.state.multi !== this.props.data.multi) {
       this.setState({
@@ -34,13 +35,16 @@ class CanvasProps extends Component<CanvasPropsProps> {
     }
   }
 
+
+
+
   render() {
     const { getFieldDecorator } = this.props.form;
 
     if (this.state.node) {
       return (
         <Form>
-          <div className={styles.title}>位置和大小</div>
+          <div className={styles.title}>节点信息：</div>
           <div className={styles.items}>
             <div className="flex grid">
               <div>X（px）</div>
@@ -58,6 +62,8 @@ class CanvasProps extends Component<CanvasPropsProps> {
                 </Form.Item>
               </div>
             </div>
+
+
             <div className="flex grid">
               <div>宽（px）</div>
               <div>高（px）</div>
@@ -74,12 +80,96 @@ class CanvasProps extends Component<CanvasPropsProps> {
                 </Form.Item>
               </div>
             </div>
+
+            <div className={styles.title}>业务配置 ：</div>
+
+            <div className="flex grid">
+              <div>项目名称</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.rect.systemIP', { initialValue: '业务风控' })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
+
+            <div className="flex grid">
+              <div>系统名</div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.rect.systemName', { initialValue: '测试系统' })(<Input />)}
+                </Form.Item>
+            </div>
+
+            <div className="flex grid">
+              <div>IP配置</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.rect.systemIP', { initialValue: '192.168.1.1' })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
+
+            <div className="flex grid">
+              <div>部署服务</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.rect.serviceName', { initialValue: 'nginx' })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
+            <div className="flex grid">
+              <div>XXXX</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.rect.systemIP', { initialValue: '' })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
+            <div className="flex grid">
+              <div>XXXX</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.rect.systemIP', { initialValue: '' })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
           </div>
         </Form>
       );
     } else if (this.state.line) {
       return (
-        <div className={styles.title}>line</div>
+        <Form>
+            <div className={styles.title}>连接状态 ：</div>
+          <div className={styles.items}>
+
+            <div className="flex grid">
+              <div>单向通路</div>
+              <Form.Item className={styles.formItem}>
+                {getFieldDecorator('node.nodeLine.status', { initialValue: '正常' })(<Input />)}
+              </Form.Item>
+            </div>
+
+            <div className="flex grid">
+              <div>XXX</div>
+              <Form.Item className={styles.formItem}>
+                {getFieldDecorator('node.nodeLine.status', { initialValue: '' })(<Input />)}
+              </Form.Item>
+            </div>
+
+            <div className="flex grid">
+              <div>XXX</div>
+              <Form.Item className={styles.formItem}>
+                {getFieldDecorator('node.nodeLine.status', { initialValue: '' })(<Input />)}
+              </Form.Item>
+            </div>
+          </div>
+
+
+        </Form>
       );
     } else if (this.state.multi) {
       return (
@@ -89,25 +179,22 @@ class CanvasProps extends Component<CanvasPropsProps> {
 
     return (
       <div>
-        <div className={styles.title}>欢迎使用le5le-topology！</div>
-        <div className={styles.group}>
-          <a className={styles.star} href="https://github.com/le5le-com/topology"
-            target="_blank"
-          >
-            喜欢，点击这里打个star吧
-          </a>
-          <a href="https://www.yuque.com/alsmile/topology" target="_blank">使用教程</a><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat.jpg?t=1" target="_blank">微信交流群（大群）</a
-          ><br />
-          <a href="http://topology.le5le.com/assets/img/topology_wechat2.jpg" target="_blank">微信交流群2</a><br />
-          <a href="https://www.yuque.com/alsmile/topology/faq#EVbCgt" target="_blank">联系我们</a>
-        </div>
-        <div className={styles.title}>[Todo] 未来规划</div>
+        <div className={styles.title}>欢迎使用图形绘制工具</div>
+        {/*<div className={styles.group}>*/}
+        {/*  <span className={styles.star}>欢迎提出优化改进建议*/}
+        {/*  </span>*/}
+        {/*  <a href="">使用教程</a><br />*/}
+        {/*  <a href="" target="_blank">联系我们</a*/}
+        {/*  ><br />*/}
+        {/*</div>*/}
+        <div className={styles.title}>[Todo]计划实现功能</div>
         <ul className={styles.group}>
-          <li>Github issues</li>
-          <li>React demo</li>
-          <li>Vue3 demo</li>
-          <li>系列教程</li>
+          <li>对画布元素的操作：全选、复制、剪切、粘贴快捷键配置</li>
+          <li>画布图形预览</li>
+          <li>画布数据从json 转为 xml 文件</li>
+          <li>元素集合按模块分组</li>
+          <li>绘制工具简易使用教程</li>
+          <li>增加锁定按钮：改变画布可编辑状态</li>
         </ul>
         <div className={styles.bottom} >
           <div className={styles.title}>
@@ -118,7 +205,6 @@ class CanvasProps extends Component<CanvasPropsProps> {
             <li>Ctrl + 方向键：控制节点移动1个像素</li>
             <li>Ctrl + 鼠标移动：移动整个画布</li>
             <li>Ctrl + 鼠标滚轮：缩放</li>
-            <li>添加或选中节点，右侧属性支持上传各种图片哦</li>
           </ul>
         </div>
       </div>

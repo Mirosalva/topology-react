@@ -86,17 +86,32 @@ import {
 
 import CanvasProps from './components/canvasProps';
 import { IEvent } from '@/models/event';
+import { Store } from 'le5le-store';
+
 
 class Index extends React.Component<{ event: IEvent }> {
   canvas: Topology;
   canvasOptions: Options = {
     rotateCursor: '/img/rotate.cur'
   };
+  subMenu : any;
+  selected: Props;
+
+  data = {
+    id: '',
+    fileId: '',
+    data: { nodes: [], lines: [] },
+    name: '',
+    desc: '',
+    image: '',
+    userId: '',
+    shared: false
+  };
 
   state = {
     event: this.props.event,
     tools: Tools,
-    iconfont: { fontSize: '.24rem' },
+    iconfont: { fontSize: '48px' },
     selected: {
       node: null,
       line: null,
@@ -108,6 +123,284 @@ class Index extends React.Component<{ event: IEvent }> {
     this.canvasRegister();
     this.canvasOptions.on = this.onMessage;
     this.canvas = new Topology('topology-canvas', this.canvasOptions);
+
+    this.addSubscribe();
+  }
+  addSubscribe = () => {
+    this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
+      switch (menu.event) {
+        case 'new':
+          this.onNew();
+          break;
+        case 'open':
+          setTimeout(() => {
+            this.selected = null;
+          });
+          if (!this.data.id) {
+            this.onNew();
+          }
+          this.onOpenLocal();
+          break;
+        case 'save':
+          this.save();
+          break;
+        case 'saveAs':
+          this.data.id = '';
+          this.save();
+          break;
+        case 'down':
+          this.onSaveLocal();
+          break;
+        case 'downPng':
+          this.onSavePng(menu.data);
+          break;
+        // case 'downSvg':
+        //   this.toSVG();
+        //   break;
+        case 'undo':
+          this.canvas.undo();
+          break;
+        case 'redo':
+          this.canvas.redo();
+          break;
+        case 'cut':
+          this.canvas.cut();
+          break;
+        case 'copy':
+          this.canvas.copy();
+          break;
+        case 'parse':
+          this.canvas.parse();
+          break;
+        case 'filename':
+          this.onSaveFilename(menu.data);
+          break;
+        case 'share':
+          this.onShare();
+          break;
+        case 'lock':
+          this.readonly = menu.data;
+          this.canvas.lock(menu.data);
+          break;
+        case 'lineName':
+          this.canvas.data.lineName = menu.data;
+          break;
+        case 'fromArrowType':
+          this.canvas.data.fromArrowType = menu.data;
+          break;
+        case 'toArrowType':
+          this.canvas.data.toArrowType = menu.data;
+          break;
+        case 'scale':
+          this.canvas.scaleTo(menu.data);
+          break;
+        case 'fullscreen':
+          this.workspace.nativeElement.requestFullscreen();
+          setTimeout(() => {
+            this.canvas.resize();
+            this.canvas.overflow();
+          }, 500);
+          break;
+      }
+    });
+
+  }
+  onNew() {
+    this.data = {
+      id: '',
+      fileId: '',
+      data: { nodes: [], lines: [] },
+      name: '',
+      desc: '',
+      image: '',
+      userId: '',
+      shared: false
+    };
+    Store.set('file', this.data);
+    this.canvas.open(this.data.data);
+  }
+
+  async onOpen(data: { id: string; fileId?: string }) {
+    const ret = await this.service.Get(data);
+    if (!ret) {
+      this.router.navigateByUrl('/workspace');
+      return;
+    }
+    Store.set('recently', {
+      id: ret.id,
+      fileId: ret.fileId || '',
+      image: ret.image,
+      name: ret.name,
+      desc: ret.desc
+    });
+
+    if (this.user && ret.userId !== this.user.id) {
+      ret.shared = false;
+      ret.id = '';
+    }
+    this.data = ret;
+    Store.set('lineName', ret.data.lineName);
+    Store.set('fromArrowType', ret.data.fromArrowType);
+    Store.set('toArrowType', ret.data.toArrowType);
+    this.canvas.open(ret.data);
+
+    Store.set('file', this.data);
+
+    this.animate();
+  }
+
+  animate() {
+    const n = Date.now();
+    for (const item of this.canvas.data.nodes) {
+      if (item.animatePlay) {
+        item.animateStart = n;
+      }
+    }
+    this.canvas.animate();
+  }
+
+  onOpenLocal() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = event => {
+      const elem: any = event.srcElement || event.target;
+      if (elem.files && elem.files[0]) {
+        const name = elem.files[0].name.replace('.json', '');
+        this.data.name = name;
+        Store.set('file', this.data);
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+          const text = e.target.result + '';
+          try {
+            const data = JSON.parse(text);
+            if (data && Array.isArray(data.nodes) && Array.isArray(data.lines)) {
+              Store.set('lineName', data.lineName);
+              Store.set('fromArrowType', data.fromArrowType);
+              Store.set('toArrowType', data.toArrowType);
+              this.data = {
+                id: '',
+                fileId: '',
+                data,
+                name: name,
+                desc: '',
+                image: '',
+                userId: '',
+                shared: false
+              };
+              this.canvas.open(data);
+            }
+          } catch (e) {
+            return false;
+          }
+        };
+        reader.readAsText(elem.files[0]);
+      }
+    };
+    input.click();
+  }
+
+  save() {
+    this.data.data = this.canvas.data;
+    this.canvas.toImage(null, null, async blob => {
+      if (this.data.id && !this.coreService.isVip(this.user)) {
+        if (!(await this.service.DelImage(this.data.image))) {
+          return;
+        }
+      }
+
+      const file = await this.service.Upload(blob, this.data.shared);
+      if (!file) {
+        return;
+      }
+      this.data.image = file.url;
+      const ret = await this.service.Save(this.data);
+      if (ret) {
+        this.data.id = ret.id;
+        Store.set('file', this.data);
+        const _noticeService: NoticeService = new NoticeService();
+        _noticeService.notice({
+          body: '保存成功！',
+          theme: 'success'
+        });
+
+        Store.set('recently', {
+          id: this.data.id,
+          image: this.data.image,
+          name: this.data.name,
+          desc: this.data.desc
+        });
+
+        this.router.navigate(['/workspace'], { queryParams: { id: this.data.id } });
+      }
+    });
+  }
+
+  async onSaveFilename(filename: string) {
+    this.data.name = filename;
+    Store.set('file', this.data);
+
+    if (this.data.id) {
+      if (
+        !(await this.service.Patch({
+          id: this.data.id,
+          name: filename
+        }))
+      ) {
+        return;
+      }
+
+      Store.set('recently', {
+        id: this.data.id,
+        fileId: this.data.fileId || '',
+        image: this.data.image,
+        name: filename
+      });
+    }
+  }
+
+  onSaveLocal() {
+    const data = this.canvas.data;
+    FileSaver.saveAs(
+      new Blob([JSON.stringify(data)], { type: 'text/plain;charset=utf-8' }),
+      `${this.data.name || 'le5le.topology'}.json`
+    );
+  }
+
+  onSavePng(options?: { type?: string; quality?: any; ext?: string }) {
+    if (!options) {
+      options = {};
+    }
+    const name = this.data.name + (options.ext || '.png');
+    this.canvas.saveAsImage(name, options.type, options.quality);
+  }
+
+  async onShare() {
+    if (!this.data.id) {
+      return;
+    }
+
+    if (
+      !(await this.service.Patch({
+        id: this.data.id,
+        image: this.data.image,
+        shared: !this.data.shared
+      }))
+    ) {
+      return;
+    }
+
+    this.data.shared = !this.data.shared;
+    Store.set('file', this.data);
+  }
+
+  onCut() {
+    this.canvas.cut();
+  }
+  onCopy() {
+    this.canvas.copy();
+  }
+  onParse() {
+    this.canvas.parse();
   }
 
   canvasRegister() {
@@ -300,12 +593,12 @@ class Index extends React.Component<{ event: IEvent }> {
   handle_save(data: any) {
     FileSaver.saveAs(
       new Blob([JSON.stringify(this.canvas.data)], { type: 'text/plain;charset=utf-8' }),
-      `le5le.topology.json`
+      `topography.json`
     );
   }
 
   handle_savePng(data: any) {
-    this.canvas.saveAsImage('le5le.topology.png');
+    this.canvas.saveAsImage('topology.png');
   }
 
   handle_saveSvg(data: any) {
@@ -338,7 +631,7 @@ class Index extends React.Component<{ event: IEvent }> {
     const url = urlObject.createObjectURL(export_blob);
 
     const a = document.createElement('a');
-    a.setAttribute('download', 'le5le.topology.svg');
+    a.setAttribute('download', 'topology.svg');
     a.setAttribute('href', url);
     const evt = document.createEvent('MouseEvents');
     evt.initEvent('click', true, true);
@@ -409,7 +702,7 @@ class Index extends React.Component<{ event: IEvent }> {
                       item.children.map((btn: any, i: number) => {
                         return (
                           <a key={i} title={btn.name} draggable={true} onDragStart={(ev) => { this.onDrag(ev, btn) }}>
-                            <i className={'iconfont ' + btn.icon} style={this.state.iconfont} />
+                            <i className={'topology ' + btn.icon} style={this.state.iconfont} />
                           </a>
                         )
                       })
@@ -422,6 +715,8 @@ class Index extends React.Component<{ event: IEvent }> {
         </div>
         <div id="topology-canvas" className={styles.full} />
         <div className={styles.props}>
+          {/*{this.state.selected.node != null && this.state.selected.node.name == 'rectangle' ? <CanvasProps data={this.state.selected} onValuesChange={this.handlePropsChange} /> : null}*/}
+          {/*{this.state.selected.line != null ? <CanvasProps data={this.state.selected} onValuesChange={this.handlePropsChange} /> : null}*/}
           <CanvasProps data={this.state.selected} onValuesChange={this.handlePropsChange} />
         </div>
       </div>
