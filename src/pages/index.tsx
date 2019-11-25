@@ -90,12 +90,13 @@ import { Store } from 'le5le-store';
 
 
 class Index extends React.Component<{ event: IEvent }> {
+
   canvas: Topology;
   canvasOptions: Options = {
     rotateCursor: '/img/rotate.cur'
   };
   subMenu : any;
-  selected: Props;
+  selected: CanvasProps;
 
   data = {
     id: '',
@@ -125,7 +126,85 @@ class Index extends React.Component<{ event: IEvent }> {
     this.canvas = new Topology('topology-canvas', this.canvasOptions);
 
     this.addSubscribe();
+    document.addEventListener("keydown", this.onKeyDown)
   }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.onKeyDown)
+  }
+
+  onKeyDown = (key:KeyboardEvent) => {
+    switch (key.keyCode) {
+      case 79:
+        if (key.ctrlKey) {
+          setTimeout(() => {
+            this.selected = null;
+          });
+          if (!this.data.id) {
+            this.onNew();
+          }
+          this.onOpenLocal();
+        }
+        break;
+      case 73:
+        if (key.ctrlKey) {
+          setTimeout(() => {
+            this.selected = null;
+          });
+          this.onOpenLocal();
+        }
+        break;
+      case 83:
+        if (key.ctrlKey) {
+          if (key.shiftKey) {
+            this.data.id = '';
+            this.save();
+          } else if (key.altKey) {
+            this.onSaveLocal();
+          } else {
+            this.save();
+          }
+        }
+        break;
+      case 88:
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
+          this.onCut();
+        }
+        break;
+      case 67:
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
+          this.onCopy();
+        }
+        break;
+      case 86:
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
+          this.onParse();
+        }
+        break;
+      case 89:
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
+          this.canvas.redo();
+        }
+        break;
+        // 撤销 反撤销
+      case 90:
+        if (key.ctrlKey && key.target === this.canvas.divLayer.canvas) {
+          if (key.shiftKey) {
+            this.canvas.redo();
+          } else {
+            this.canvas.undo();
+          }
+        }
+        break;
+    }
+
+    if (key.ctrlKey && key.keyCode === 83) {
+      key.preventDefault();
+      key.returnValue = false;
+      return false;
+    }
+  }
+
   addSubscribe = () => {
     this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
       switch (menu.event) {
@@ -154,9 +233,6 @@ class Index extends React.Component<{ event: IEvent }> {
         case 'downPng':
           this.onSavePng(menu.data);
           break;
-        // case 'downSvg':
-        //   this.toSVG();
-        //   break;
         case 'undo':
           this.canvas.undo();
           break;
@@ -191,11 +267,12 @@ class Index extends React.Component<{ event: IEvent }> {
         case 'toArrowType':
           this.canvas.data.toArrowType = menu.data;
           break;
-        case 'scale':
-          this.canvas.scaleTo(menu.data);
-          break;
+        // case 'scale':
+          // this.canvas.scaleTo(menu.data);
+          // break;
         case 'fullscreen':
-          this.workspace.nativeElement.requestFullscreen();
+          // this.workspace.nativeElement.requestFullscreen();
+          // 改成react的函数绑定 实现全屏
           setTimeout(() => {
             this.canvas.resize();
             this.canvas.overflow();
@@ -205,6 +282,7 @@ class Index extends React.Component<{ event: IEvent }> {
     });
 
   }
+
   onNew() {
     this.data = {
       id: '',

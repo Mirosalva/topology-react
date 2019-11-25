@@ -5,7 +5,7 @@ export const Tools = [
     children: [
       {
         name: 'serverNode',
-        icon: 'topology-fuwuqi',
+        icon: 'topology-jiankong',
         iconFamily:'topology',
         data: {
           text: '',
@@ -14,7 +14,7 @@ export const Tools = [
             height: 80
           },
           name: 'image',
-          icon: '\ue614',
+          icon: '\ue61e',
           iconFamily: 'topology',
           iconColor: '#000000'
         }
