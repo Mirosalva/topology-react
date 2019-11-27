@@ -9,14 +9,15 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "dva": "^2.6.0-beta.6",
     "antd": "^3.19.5",
+    "axios": "^0.19.0",
+    "dva": "^2.6.0-beta.6",
     "file-saver": "^2.0.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "topology-activity-diagram": "^0.0.4",
     "topology-class-diagram": "^0.0.1",
-    "topology-core": "^0.0.16",
+    "topology-core": "0.0.16",
     "topology-flow-diagram": "^0.0.1",
     "topology-sequence-diagram": "^0.0.4"
   },
@@ -43,10 +44,17 @@
     "umi-types": "^0.3.0"
   },
   "lint-staged": {
-    "*.{ts,tsx}": ["tslint --fix", "git add"],
-    "*.{js,jsx}": ["eslint --fix", "git add"]
+    "*.{ts,tsx}": [
+      "tslint --fix",
+      "git add"
+    ],
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "engines": {
     "node": ">=8.0.0"
-  }
+  },
+  "proxy": "http://172.23.17.9:3000"
 }
