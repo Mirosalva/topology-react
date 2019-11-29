@@ -5,7 +5,6 @@
 - [开发教程](https://juejin.im/post/5dcc074151882559c8061905)
 - [API文档](https://www.yuque.com/alsmile/topology)
 
-
 # 使用技术
 
 ReactJS + UmiJS + DvaJS + Ant.Design
@@ -20,3 +19,9 @@ $ npm start
 $ npm run build
 
 ```
+
+## Start dev server
+$ umi dev
+
+## Build and deploy
+$ umi build

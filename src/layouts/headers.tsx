@@ -3,19 +3,14 @@ import { ClickParam } from 'antd/es/menu';
 import React from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-
 import styles from './headers.less';
-import About from './about';
-import License from './license';
-import Joinin from './joinin';
-
 const { SubMenu } = Menu;
 
 class Headers extends React.Component<{ canvasData: any }> {
   state = {
-    about: false,
-    license: false,
-    joinin: false,
+    // about: false,
+    // license: false,
+    // joinin: false,
     lineNames: {
       curve: '曲线',
       polyline: '折线',
@@ -36,21 +31,21 @@ class Headers extends React.Component<{ canvasData: any }> {
     }
 
     switch (key) {
-      case 'about':
-        this.setState({
-          about: true,
-        });
-        break;
-      case 'license':
-        this.setState({
-          license: true,
-        });
-        break;
-      case 'joinin':
-        this.setState({
-          joinin: true,
-        });
-        break;
+      // case 'about':
+      //   this.setState({
+      //     about: true,
+      //   });
+      //   break;
+      // case 'license':
+      //   this.setState({
+      //     license: true,
+      //   });
+      //   break;
+      // case 'joinin':
+      //   this.setState({
+      //     joinin: true,
+      //   });
+      //   break;
       default:
         if (key && this.props.dispatch) {
           this.props.dispatch({
@@ -64,9 +59,9 @@ class Headers extends React.Component<{ canvasData: any }> {
     }
   };
 
-  handleModalChange = () => {
-    this.setState({ about: false, license: false, joinin: false });
-  }
+  // handleModalChange = () => {
+  //   this.setState({ about: false, license: false, joinin: false });
+  // }
 
   render(): React.ReactNode {
     const { data } = this.props.canvasData;
@@ -111,7 +106,6 @@ class Headers extends React.Component<{ canvasData: any }> {
           <Menu.Item className={styles.right}>
             <div>视图：{scale}%</div>
           </Menu.Item>
-
 
 
           <SubMenu title={`默认连线类型：${this.state.lineNames[data.lineName]}`} className={styles.right}>

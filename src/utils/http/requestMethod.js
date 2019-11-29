@@ -3,14 +3,13 @@
  * Create Time : 2019/11/27 11:26
  * Description :
  */
-import Toast from '../components/Toast';
+import Toast from '../../components/Toast';
 
 import Axios from 'axios';
 import qs from 'qs';
-import history from './history';
 
 const axios = Axios.create({
-  baseURL:'/operation-web/'
+  baseURL:'/operation-web'
 });
 
 const localStorage = window.localStorage;

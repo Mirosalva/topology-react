@@ -9,6 +9,7 @@
     "precommit": "lint-staged"
   },
   "dependencies": {
+    "topology-core": "file:../libs/topology",
     "antd": "^3.19.5",
     "axios": "^0.19.0",
     "dva": "^2.6.0-beta.6",
@@ -17,7 +18,7 @@
     "react-dom": "^16.8.6",
     "topology-activity-diagram": "^0.0.4",
     "topology-class-diagram": "^0.0.1",
-    "topology-core": "0.0.16",
+
     "topology-flow-diagram": "^0.0.1",
     "topology-sequence-diagram": "^0.0.4"
   },

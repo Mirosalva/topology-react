@@ -43,9 +43,7 @@ class CanvasProps extends Component<CanvasPropsProps> {
       return (
         <Form>
           <div className={styles.title}>服务器基本信息：</div>
-
           <div className={styles.items}>
-
             <div className="flex grid">
               <div>服务器名称</div>
               <div>

@@ -3,7 +3,7 @@ import { connect } from 'dva';
 
 import styles from './index.less';
 import { Tools } from '@/utils/tools';
-
+import {getJsonHeaders,post} from '@/utils/http/requestMethod';
 import * as FileSaver from 'file-saver';
 declare var C2S: any;
 
@@ -125,7 +125,7 @@ class Index extends React.Component<{ event: IEvent }> {
     this.canvasOptions.on = this.onMessage;
     this.canvas = new Topology('topology-canvas', this.canvasOptions);
 
-    this.addSubscribe();
+    // this.addSubscribe();
     document.addEventListener("keydown", this.onKeyDown)
   }
 
@@ -133,6 +133,7 @@ class Index extends React.Component<{ event: IEvent }> {
     document.removeEventListener("keydown", this.onKeyDown)
   }
 
+  // 监听键盘快捷键
   onKeyDown = (key:KeyboardEvent) => {
     switch (key.keyCode) {
       case 79:
@@ -205,83 +206,86 @@ class Index extends React.Component<{ event: IEvent }> {
     }
   }
 
-  addSubscribe = () => {
-    this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
-      switch (menu.event) {
-        case 'new':
-          this.onNew();
-          break;
-        case 'open':
-          setTimeout(() => {
-            this.selected = null;
-          });
-          if (!this.data.id) {
-            this.onNew();
-          }
-          this.onOpenLocal();
-          break;
-        case 'save':
-          this.save();
-          break;
-        case 'saveAs':
-          this.data.id = '';
-          this.save();
-          break;
-        case 'down':
-          this.onSaveLocal();
-          break;
-        case 'downPng':
-          this.onSavePng(menu.data);
-          break;
-        case 'undo':
-          this.canvas.undo();
-          break;
-        case 'redo':
-          this.canvas.redo();
-          break;
-        case 'cut':
-          this.canvas.cut();
-          break;
-        case 'copy':
-          this.canvas.copy();
-          break;
-        case 'parse':
-          this.canvas.parse();
-          break;
-        case 'filename':
-          this.onSaveFilename(menu.data);
-          break;
-        case 'share':
-          this.onShare();
-          break;
-        case 'lock':
-          this.readonly = menu.data;
-          this.canvas.lock(menu.data);
-          break;
-        case 'lineName':
-          this.canvas.data.lineName = menu.data;
-          break;
-        case 'fromArrowType':
-          this.canvas.data.fromArrowType = menu.data;
-          break;
-        case 'toArrowType':
-          this.canvas.data.toArrowType = menu.data;
-          break;
-        // case 'scale':
-          // this.canvas.scaleTo(menu.data);
-          // break;
-        case 'fullscreen':
-          // this.workspace.nativeElement.requestFullscreen();
-          // 改成react的函数绑定 实现全屏
-          setTimeout(() => {
-            this.canvas.resize();
-            this.canvas.overflow();
-          }, 500);
-          break;
-      }
-    });
-
-  }
+  // 对 menu 子项点击事件监听
+  // addSubscribe = () => {
+  //   this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
+  //     switch (menu.event) {
+  //       case 'new':
+  //         this.onNew();
+  //         break;
+  //       case 'open':
+  //         setTimeout(() => {
+  //           this.selected = null;
+  //         });
+  //         if (!this.data.id) {
+  //           this.onNew();
+  //         }
+  //         this.onOpenLocal();
+  //         break;
+  //       case 'save':
+  //         // alert('test')
+  //         // this.testHttp();
+  //         this.save();
+  //         break;
+  //       case 'saveAs':
+  //         this.data.id = '';
+  //         this.save();
+  //         break;
+  //       case 'down':
+  //         this.onSaveLocal();
+  //         break;
+  //       case 'downPng':
+  //         this.onSavePng(menu.data);
+  //         break;
+  //       case 'undo':
+  //         this.canvas.undo();
+  //         break;
+  //       case 'redo':
+  //         this.canvas.redo();
+  //         break;
+  //       case 'cut':
+  //         this.canvas.cut();
+  //         break;
+  //       case 'copy':
+  //         this.canvas.copy();
+  //         break;
+  //       case 'parse':
+  //         this.canvas.parse();
+  //         break;
+  //       case 'filename':
+  //         this.onSaveFilename(menu.data);
+  //         break;
+  //       case 'share':
+  //         this.onShare();
+  //         break;
+  //       case 'lock':
+  //         this.readonly = menu.data;
+  //         this.canvas.lock(menu.data);
+  //         break;
+  //       case 'lineName':
+  //         this.canvas.data.lineName = menu.data;
+  //         break;
+  //       case 'fromArrowType':
+  //         this.canvas.data.fromArrowType = menu.data;
+  //         break;
+  //       case 'toArrowType':
+  //         this.canvas.data.toArrowType = menu.data;
+  //         break;
+  //       // case 'scale':
+  //         // this.canvas.scaleTo(menu.data);
+  //         // break;
+  //       case 'fullscreen':
+  //         // this.workspace.nativeElement.requestFullscreen();
+  //         // 改成react的函数绑定 实现全屏
+  //         setTimeout(() => {
+  //           this.canvas.resize();
+  //           this.canvas.overflow();
+  //         }, 500);
+  //         break;
+  //     }
+  //   });
+  //
+  // }
 
   onNew() {
     this.data = {
@@ -375,6 +379,25 @@ class Index extends React.Component<{ event: IEvent }> {
       }
     };
     input.click();
+  }
+
+
+  testHttp () {
+    const requestParams = {
+      REQUEST_URL: '/testforhttp',
+      headers: getJsonHeaders()
+    };
+    const _this = this;
+    post(requestParams, {
+      onSuccess (responseData) {
+        if (responseData.returnCode == 0) {
+          const {guardianName } = responseData.data;
+          _this.setState({
+            guardianName
+          })
+        }
+      },
+    });
   }
 
   save() {
@@ -793,8 +816,6 @@ class Index extends React.Component<{ event: IEvent }> {
         </div>
         <div id="topology-canvas" className={styles.full} />
         <div className={styles.props}>
-          {/*{this.state.selected.node != null && this.state.selected.node.name == 'rectangle' ? <CanvasProps data={this.state.selected} onValuesChange={this.handlePropsChange} /> : null}*/}
-          {/*{this.state.selected.line != null ? <CanvasProps data={this.state.selected} onValuesChange={this.handlePropsChange} /> : null}*/}
           <CanvasProps data={this.state.selected} onValuesChange={this.handlePropsChange} />
         </div>
       </div>
