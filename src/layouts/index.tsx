@@ -7,7 +7,7 @@ const BasicLayout: React.FC = props => {
     <div className={styles.page}>
       <Headers />
       <div className={styles.body}>{props.children}</div>
-      <div> 测试</div>
+      <div className={styles.page}> 底部测试页面</div>
     </div>
   );
 };

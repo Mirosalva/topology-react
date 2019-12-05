@@ -8,9 +8,7 @@ const { SubMenu } = Menu;
 
 class Headers extends React.Component<{ canvasData: any }> {
   state = {
-    // about: false,
-    // license: false,
-    // joinin: false,
+
     lineNames: {
       curve: '曲线',
       polyline: '折线',
@@ -29,23 +27,13 @@ class Headers extends React.Component<{ canvasData: any }> {
       router.push(key);
       return;
     }
-
     switch (key) {
       // case 'about':
       //   this.setState({
       //     about: true,
       //   });
       //   break;
-      // case 'license':
-      //   this.setState({
-      //     license: true,
-      //   });
-      //   break;
-      // case 'joinin':
-      //   this.setState({
-      //     joinin: true,
-      //   });
-      //   break;
+
       default:
         if (key && this.props.dispatch) {
           this.props.dispatch({
@@ -59,13 +47,9 @@ class Headers extends React.Component<{ canvasData: any }> {
     }
   };
 
-  // handleModalChange = () => {
-  //   this.setState({ about: false, license: false, joinin: false });
-  // }
-
   render(): React.ReactNode {
     const { data } = this.props.canvasData;
-    const scale = Math.floor(data.scale);
+    const scale = Math.floor(data.scale *100);
     return (
       <div>
         <Menu
@@ -74,11 +58,6 @@ class Headers extends React.Component<{ canvasData: any }> {
           mode="horizontal"
           onClick={this.onMenuClick}
         >
-          {/*<Menu.Item key="/" className={styles.logo}>*/}
-          {/*  <a>*/}
-          {/*    <img src="/img/favicon.ico" />*/}
-          {/*  </a>*/}
-          {/*</Menu.Item>*/}
           <SubMenu title="文件" className={styles.item}>
             <Menu.Item key="new" className={styles.subTtem}>新建文件</Menu.Item>
             {/*<Menu.Item key="open" className={styles.subTtem}>打开本地文件（暂不可用）</Menu.Item>*/}
@@ -97,16 +76,16 @@ class Headers extends React.Component<{ canvasData: any }> {
             <Menu.Item key="parse" className={styles.subTtem}>粘贴</Menu.Item>
           </SubMenu>
 
-
-
           <div className={styles.full} />
           <Menu.Item key='fullscreen' className={styles.right}>
             <div>全屏</div>
           </Menu.Item>
-          <Menu.Item className={styles.right}>
-            <div>视图：{scale}%</div>
+          <Menu.Item key='restore' className={styles.right}>
+            <div>
+              视图：{scale}%
+              <a  className={styles.subTtem} hidden={scale == 100}> 还原</a >
+            </div>
           </Menu.Item>
-
 
           <SubMenu title={`默认连线类型：${this.state.lineNames[data.lineName]}`} className={styles.right}>
             <Menu.Item className={styles.subTtem} key="curve">曲线</Menu.Item>
@@ -115,15 +94,6 @@ class Headers extends React.Component<{ canvasData: any }> {
           </SubMenu>
         </Menu>
 
-        {/*{this.state.about ? (*/}
-        {/*  <About show={this.state.about} onChange={this.handleModalChange} />*/}
-        {/*) : null}*/}
-        {/*{this.state.license ? (*/}
-        {/*  <License show={this.state.license} onChange={this.handleModalChange} />*/}
-        {/*) : null}*/}
-        {/*{this.state.joinin ? (*/}
-        {/*  <Joinin show={this.state.joinin} onChange={this.handleModalChange} />*/}
-        {/*) : null}*/}
       </div>
     );
   }

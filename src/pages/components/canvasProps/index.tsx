@@ -48,7 +48,7 @@ class CanvasProps extends Component<CanvasPropsProps> {
               <div>服务器名称</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.serverName', { initialValue: '' })(<Input />)}
+                  {getFieldDecorator('node.server_info.server_name', { initialValue: this.state.node.server_info.server_name })(<Input />)}
                 </Form.Item>
               </div>
             </div>
@@ -56,7 +56,8 @@ class CanvasProps extends Component<CanvasPropsProps> {
               <div>IP1</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.serveIP1', { initialValue: '192.168.1.1' })(<Input />)}
+                  {/*{getFieldDecorator('node.rect.x', { initialValue: this.state.node.rect.x })(<InputNumber />)}*/}
+                  {getFieldDecorator('node.server_info.server_ip1', { initialValue: this.state.node.server_info.server_ip1 })(<Input />)}
                 </Form.Item>
               </div>
             </div>
@@ -64,7 +65,7 @@ class CanvasProps extends Component<CanvasPropsProps> {
               <div>IP2</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.serverIP2', { initialValue: '192.168.1.1' })(<Input />)}
+                  {getFieldDecorator('node.server_info.server_ip2', { initialValue: this.state.node.server_info.server_ip2  })(<Input />)}
                 </Form.Item>
               </div>
             </div>
@@ -72,7 +73,7 @@ class CanvasProps extends Component<CanvasPropsProps> {
               <div>IP3</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.serverIP3', { initialValue: '192.168.1.1' })(<Input />)}
+                  {getFieldDecorator('node.server_info.server_ip3', { initialValue: this.state.node.server_info.server_ip3  })(<Input />)}
                 </Form.Item>
               </div>
             </div>
@@ -80,19 +81,53 @@ class CanvasProps extends Component<CanvasPropsProps> {
               <div>服务器状态</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.serverStatus', { initialValue: '有效' })(<Input />)}
+                  {getFieldDecorator('node.server_info.server_state', { initialValue: this.state.node.server_info.server_state  })(<Input />)}
                 </Form.Item>
               </div>
             </div>
 
+            <div className="flex grid">
+              <div>CPU配置</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.server_info.cpu_info', { initialValue: this.state.node.server_info.cpu_info  })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
+            <div className="flex grid">
+              <div>内存配置</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.server_info.memory_info', { initialValue: this.state.node.server_info.memory_info  })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
+            <div className="flex grid">
+              <div>系统及版本</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.server_info.system_version', { initialValue: this.state.node.server_info.system_version  })(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
+
+            <div className="flex grid">
+              <div>硬盘配置</div>
+              <div>
+                <Form.Item className={styles.formItem}>
+                  {getFieldDecorator('node.server_info.harddisk_info', { initialValue: this.state.node.server_info.harddisk_info})(<Input />)}
+                </Form.Item>
+              </div>
+            </div>
 
             <div className={styles.title}>部署服务信息：</div>
-
             <div className="flex grid">
               <div>服务名称</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemIP', { initialValue: '智能物流' })(<Input />)}
+                  {getFieldDecorator('node.service_info.service_name', { initialValue: '智能物流' })(<Input />)}
                 </Form.Item>
               </div>
             </div>
@@ -100,7 +135,7 @@ class CanvasProps extends Component<CanvasPropsProps> {
               <div>服务类型</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemIP', { initialValue: '第三方组件' })(<Input />)}
+                  {getFieldDecorator('node.service_info.service_type', { initialValue: '第三方组件' })(<Input />)}
                 </Form.Item>
               </div>
             </div>
@@ -108,65 +143,35 @@ class CanvasProps extends Component<CanvasPropsProps> {
               <div>组件名</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemIP', { initialValue: 'tomcat' })(<Input />)}
+                  {getFieldDecorator('node.server.service_info.service_component', { initialValue: 'tomcat' })(<Input />)}
                 </Form.Item>
               </div>
             </div>
             <div className="flex grid">
-              <div>开放访问端口</div>
-              <div>（多个以逗号隔开）</div>
+              <div>开放端口</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemIP', { initialValue: '' })(<Input />)}
+                  {getFieldDecorator('node.server.service_info.service_port', { initialValue: '' })(<Input />)}
                 </Form.Item>
               </div>
             </div>
 
 
             <div className="flex grid">
-              <div>系统环境</div>
+              <div>协议类型</div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemName', { initialValue: '测试环境' })(<Input />)}
+                  {getFieldDecorator('node.server.service_info.service_protocol', { initialValue: '测试环境' })(<Input />)}
                 </Form.Item>
             </div>
 
             <div className="flex grid">
-              <div>IP配置</div>
+              <div>服务类型</div>
               <div>
                 <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemIP', { initialValue: '192.168.1.1' })(<Input />)}
+                  {getFieldDecorator('node.server.service_info.service_style', { initialValue: '192.168.1.1' })(<Input />)}
                 </Form.Item>
               </div>
             </div>
-
-
-            <div className="flex grid">
-              <div>部署服务</div>
-              <div>
-                <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.serviceName', { initialValue: 'nginx' })(<Input />)}
-                </Form.Item>
-              </div>
-            </div>
-
-            <div className="flex grid">
-              <div>XXXX</div>
-              <div>
-                <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemIP', { initialValue: '' })(<Input />)}
-                </Form.Item>
-              </div>
-            </div>
-
-            <div className="flex grid">
-              <div>XXXX</div>
-              <div>
-                <Form.Item className={styles.formItem}>
-                  {getFieldDecorator('node.rect.systemIP', { initialValue: '' })(<Input />)}
-                </Form.Item>
-              </div>
-            </div>
-
           </div>
         </Form>
       );
@@ -179,46 +184,49 @@ class CanvasProps extends Component<CanvasPropsProps> {
             <div className="flex grid">
               <div>起点箭头</div>
               <Form.Item className={styles.formItem}>
-                {getFieldDecorator('node.nodeLine.status', { initialValue: '正常' })(<Input />)}
+                {getFieldDecorator('line.fromArrow', { initialValue: this.state.line.fromArrow })(<Input />)}
               </Form.Item>
             </div>
 
             <div className="flex grid">
               <div>终点箭头</div>
               <Form.Item className={styles.formItem}>
-                {getFieldDecorator('node.nodeLine.status', { initialValue: '' })(<Input />)}
+                {getFieldDecorator('line.toArrow', { initialValue: this.state.line.toArrow })(<Input />)}
               </Form.Item>
             </div>
 
             <div className="flex grid">
               <div>开始服务器ID</div>
               <Form.Item className={styles.formItem}>
-                {getFieldDecorator('node.nodeLine.status', { initialValue: '' })(<Input />)}
+                {getFieldDecorator('line.line_info.begin_server_id', { initialValue: this.state.line.line_info.begin_server_id })(<Input />)}
               </Form.Item>
             </div>
             <div className="flex grid">
               <div>结束服务器ID</div>
               <Form.Item className={styles.formItem}>
-                {getFieldDecorator('node.nodeLine.status', { initialValue: '' })(<Input />)}
+                {getFieldDecorator('line.line_info.end_server_id', { initialValue: this.state.line.line_info.end_server_id })(<Input />)}
               </Form.Item>
             </div>
 
             <div className="flex grid">
               <div>访问类型</div>
               <Form.Item className={styles.formItem}>
-                {getFieldDecorator('node.nodeLine.status', { initialValue: '正向单通' })(<Input />)}
+                {getFieldDecorator('line.line_info.connect_type', { initialValue: this.state.line.line_info.connect_type })(<Input />)}
               </Form.Item>
             </div>
             <div className="flex grid">
               <div>端口</div>
               <Form.Item className={styles.formItem}>
-                {getFieldDecorator('node.nodeLine.status', { initialValue: '' })(<Input />)}
+                {getFieldDecorator('line.line_info.connect_port', { initialValue: this.state.line.line_info.connect_port })(<Input />)}
               </Form.Item>
             </div>
-
+            <div className="flex grid">
+              <div>连接带宽</div>
+              <Form.Item className={styles.formItem}>
+                {getFieldDecorator('line.line_info.bandwidth', { initialValue:this.state.line.line_info.bandwidth })(<Input />)}
+              </Form.Item>
+            </div>
           </div>
-
-
         </Form>
       );
     } else if (this.state.multi) {
@@ -244,7 +252,7 @@ class CanvasProps extends Component<CanvasPropsProps> {
           </div>
           <ul className={styles.group}>
             <li>Ctrl + Z 撤销</li>
-            <li>Ctrl + Shift + Z 撤销</li>
+            <li>Ctrl + Shift + Z 反撤销</li>
             <li>Ctrl + X 剪切</li>
             <li>Ctrl + C 复制</li>
             <li>Ctrl + V 粘贴</li>

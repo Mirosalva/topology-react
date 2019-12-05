@@ -6,6 +6,28 @@ import { Store } from 'le5le-store';
 import { lineLen, curveLen } from '../utils';
 
 export class Line extends Pen {
+
+  line_info: {
+    line_id: string;
+    begin_server_id: string;
+    end_server_id: string;
+    connect_type: string;
+    connect_port: string;
+    begin_server_access: string;
+    end_server_access: string;
+    bandwidth: string;
+  } = {
+    line_id: this.id,
+    begin_server_id: '',
+    end_server_id: '',
+    connect_type: '1',
+    connect_port: '8443',
+    begin_server_access: '1',
+    end_server_access: '1',
+    bandwidth: '1',
+  };
+
+
   from: Point;
   to: Point;
   controlPoints: Point[] = [];
@@ -17,6 +39,7 @@ export class Line extends Pen {
   animateColor = '';
   animateSpan = 1;
   animatePos = 0;
+
   constructor(json?: any) {
     super(json);
 
@@ -142,7 +165,7 @@ export class Line extends Pen {
         this.animateStart = 0;
         Store.set('animateEnd', {
           type: 'line',
-          data: this
+          data: this,
         });
         return this.nextAnimate;
       }

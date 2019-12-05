@@ -69,7 +69,7 @@ export abstract class Pen {
       this.data = json.data || '';
       this.locked = json.locked;
     } else {
-      this.id = s8();
+      this.id = s32();
     }
   }
   render(ctx: CanvasRenderingContext2D) {

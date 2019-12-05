@@ -7,8 +7,50 @@ import { defaultIconRect, defaultTextRect } from '../middles/default.rect';
 import { text, iconfont } from '../middles/nodes/text';
 import { Store } from 'le5le-store';
 import { abs } from '../utils';
+import { ServiceInfo } from './serviceInfo';
 
 export class Node extends Pen {
+
+  service_info:{
+    service_id: string;
+    service_name:string;
+    service_type:string; // 1 2 3
+    service_component:string; // 本服务使用组件
+    service_port:string;
+    service_protocol:string;
+    service_style:string ; // 1 公网  2 局域网 3 VPN
+  }  = {
+    service_id: '',
+    service_name: 'defaultName',
+    service_type: '',
+    service_component: '',
+    service_port: '',
+    service_protocol:'',
+    service_style: ''
+  };
+
+  server_info : {
+    server_id: string;
+    server_name: string;
+    server_ip1: string;
+    server_ip2?: string;
+    server_ip3?: string;
+    cpu_info: string;
+    memory_info: string;
+    system_version: string;
+    harddisk_info: string;
+    server_state: string;
+  } = {
+    server_id: '',
+    server_name: 'defaultName',
+    server_ip1: '',
+    cpu_info: '',
+    memory_info: '',
+    system_version:'',
+    harddisk_info: '',
+    server_state: ''
+};
+
   is3D = false;
   z: number;
   zRotate = 0;

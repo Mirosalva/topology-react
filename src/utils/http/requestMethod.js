@@ -17,9 +17,9 @@ const sessionStorage = window.sessionStorage;
 
 axios.interceptors.request.use(
     config => {
-      if(config.method === 'post' || config.method === 'put' || config.method === 'delete') {
-        config.data = qs.stringify(config.data)
-      }
+      // if(config.method === 'post' || config.method === 'put' || config.method === 'delete') {
+      //   config.data = qs.stringify(config.data)
+      // }
       if (sessionStorage.token){
         config.headers.Authorization = sessionStorage.token;
       }

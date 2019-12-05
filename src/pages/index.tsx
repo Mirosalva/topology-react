@@ -125,7 +125,7 @@ class Index extends React.Component<{ event: IEvent }> {
     this.canvasOptions.on = this.onMessage;
     this.canvas = new Topology('topology-canvas', this.canvasOptions);
 
-    // this.addSubscribe();
+    this.addSubscribe();
     document.addEventListener("keydown", this.onKeyDown)
   }
 
@@ -207,85 +207,87 @@ class Index extends React.Component<{ event: IEvent }> {
   }
 
   // 对 menu 子项点击事件监听
-  // addSubscribe = () => {
-  //   this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
-  //     switch (menu.event) {
-  //       case 'new':
-  //         this.onNew();
-  //         break;
-  //       case 'open':
-  //         setTimeout(() => {
-  //           this.selected = null;
-  //         });
-  //         if (!this.data.id) {
-  //           this.onNew();
-  //         }
-  //         this.onOpenLocal();
-  //         break;
-  //       case 'save':
-  //         // alert('test')
-  //         // this.testHttp();
-  //         this.save();
-  //         break;
-  //       case 'saveAs':
-  //         this.data.id = '';
-  //         this.save();
-  //         break;
-  //       case 'down':
-  //         this.onSaveLocal();
-  //         break;
-  //       case 'downPng':
-  //         this.onSavePng(menu.data);
-  //         break;
-  //       case 'undo':
-  //         this.canvas.undo();
-  //         break;
-  //       case 'redo':
-  //         this.canvas.redo();
-  //         break;
-  //       case 'cut':
-  //         this.canvas.cut();
-  //         break;
-  //       case 'copy':
-  //         this.canvas.copy();
-  //         break;
-  //       case 'parse':
-  //         this.canvas.parse();
-  //         break;
-  //       case 'filename':
-  //         this.onSaveFilename(menu.data);
-  //         break;
-  //       case 'share':
-  //         this.onShare();
-  //         break;
-  //       case 'lock':
-  //         this.readonly = menu.data;
-  //         this.canvas.lock(menu.data);
-  //         break;
-  //       case 'lineName':
-  //         this.canvas.data.lineName = menu.data;
-  //         break;
-  //       case 'fromArrowType':
-  //         this.canvas.data.fromArrowType = menu.data;
-  //         break;
-  //       case 'toArrowType':
-  //         this.canvas.data.toArrowType = menu.data;
-  //         break;
-  //       // case 'scale':
-  //         // this.canvas.scaleTo(menu.data);
-  //         // break;
-  //       case 'fullscreen':
-  //         // this.workspace.nativeElement.requestFullscreen();
-  //         // 改成react的函数绑定 实现全屏
-  //         setTimeout(() => {
-  //           this.canvas.resize();
-  //           this.canvas.overflow();
-  //         }, 500);
-  //         break;
-  //     }
-  //   });
-  //
-  // }
+  addSubscribe = () => {
+    this.subMenu = Store.subscribe('clickMenu', (menu: { event: string; data: any }) => {
+      switch (menu.event) {
+        case 'new':
+          this.onNew();
+          break;
+        case 'open':
+          setTimeout(() => {
+            this.selected = null;
+          });
+          if (!this.data.id) {
+            this.onNew();
+          }
+          this.onOpenLocal();
+          break;
+        case 'save':
+          // alert('test')
+          this.save();
+          break;
+        case 'saveAs':
+          this.data.id = '';
+          this.save();
+          break;
+        case 'down':
+          this.onSaveLocal();
+          break;
+        case 'downPng':
+          this.onSavePng(menu.data);
+          break;
+        case 'undo':
+          this.canvas.undo();
+          break;
+        case 'redo':
+          this.canvas.redo();
+          break;
+        case 'cut':
+          this.canvas.cut();
+          break;
+        case 'copy':
+          this.canvas.copy();
+          break;
+        case 'parse':
+          this.canvas.parse();
+          break;
+        case 'filename':
+          this.onSaveFilename(menu.data);
+          break;
+        case 'share':
+          this.onShare();
+          break;
+        case 'lock':
+          this.readonly = menu.data;
+          this.canvas.lock(menu.data);
+          break;
+        case 'lineName':
+          this.canvas.data.lineName = menu.data;
+          break;
+        case 'fromArrowType':
+          this.canvas.data.fromArrowType = menu.data;
+          break;
+        case 'toArrowType':
+          this.canvas.data.toArrowType = menu.data;
+          break;
+        case 'scale':
+          this.canvas.scaleTo(menu.data);
+          break;
+        // case 'restore':
+        //   alert('restore')
+        //   break;
+        case 'fullscreen':
+          // this.workspace.nativeElement.requestFullscreen();
+          // 改成react的函数绑定 实现全屏
+          setTimeout(() => {
+            this.canvas.resize();
+            this.canvas.overflow();
+          }, 500);
+          break;
+      }
+    });
+
+  }
 
   onNew() {
     this.data = {
@@ -359,6 +361,8 @@ class Index extends React.Component<{ event: IEvent }> {
               Store.set('lineName', data.lineName);
               Store.set('fromArrowType', data.fromArrowType);
               Store.set('toArrowType', data.toArrowType);
+              Store.set('scale', data.scale);
+              Store.set('locked', data.locked);
               this.data = {
                 id: '',
                 fileId: '',
@@ -381,11 +385,20 @@ class Index extends React.Component<{ event: IEvent }> {
     input.click();
   }
 
+  processData () {
+    // console.log(JSON.stringify(this.canvas.data))
+    // const topoString:string = JSON.stringify(this.canvas.data);
+    return {
+      topology_info:this.canvas.data
+      // topology_info:'654321'
+    };
+  }
 
   testHttp () {
     const requestParams = {
       REQUEST_URL: '/testforhttp',
-      headers: getJsonHeaders()
+      headers: getJsonHeaders('123456'),
+      body:this.processData()
     };
     const _this = this;
     post(requestParams, {
@@ -463,7 +476,7 @@ class Index extends React.Component<{ event: IEvent }> {
     const data = this.canvas.data;
     FileSaver.saveAs(
       new Blob([JSON.stringify(data)], { type: 'text/plain;charset=utf-8' }),
-      `${this.data.name || 'le5le.topology'}.json`
+      `${this.data.name || 'test.topology'}.json`
     );
   }
 
@@ -545,6 +558,7 @@ class Index extends React.Component<{ event: IEvent }> {
     registerNode('sequenceFocus', sequenceFocus, sequenceFocusAnchors, sequenceFocusIconRect, sequenceFocusTextRect);
   }
 
+  // 接收信息
   onMessage = (event: string, data: any) => {
     switch (event) {
       case 'node':
@@ -608,9 +622,21 @@ class Index extends React.Component<{ event: IEvent }> {
           });
         }
         break;
+      // case 'restore':
+      //   alert('restore')
+        // this.canvas.data.scale = 100;
+        // if (this.canvas) {
+        //   this.props.dispatch({
+        //     type: 'canvas/update',
+        //     payload: {
+        //       data: this.canvas.data
+        //     }
+        //   });
+        // }
+        // break;
       case 'resize':
       case 'scale':
-      case 'locked':
+      case 'locked':;
         if (this.canvas) {
           this.props.dispatch({
             type: 'canvas/update',
@@ -632,7 +658,6 @@ class Index extends React.Component<{ event: IEvent }> {
   handlePropsChange = (props: any, changedValues: any, allValues: any) => {
     if (changedValues.node) {
       // 遍历查找修改的属性，赋值给原始Node
-
       // this.state.selected.node = Object.assign(this.state.selected.node, changedValues.node);
       for (const key in changedValues.node) {
         if (Array.isArray(changedValues.node[key])) {
@@ -647,6 +672,22 @@ class Index extends React.Component<{ event: IEvent }> {
       // 通知属性更新，刷新
       this.canvas.updateProps(this.state.selected.node);
     }
+
+    if (changedValues.line) {
+      for (const key in changedValues.line) {
+        if (Array.isArray(changedValues.line[key])) {
+          // 这里待补充node属性是数组对象时 处理方法
+        }else if (typeof changedValues.line[key] === 'object') {
+          for (const k in changedValues.line[key]) {
+            this.state.selected.line[key][k] = changedValues.line[key][k];
+          }
+        } else {
+          this.state.selected.line[key] = changedValues.line[key];
+        }
+      }
+      this.canvas.updateProps();
+    }
+
   }
 
   componentDidUpdate() {
@@ -694,12 +735,19 @@ class Index extends React.Component<{ event: IEvent }> {
   handle_save(data: any) {
     FileSaver.saveAs(
       new Blob([JSON.stringify(this.canvas.data)], { type: 'text/plain;charset=utf-8' }),
-      `topography.json`
+      `topoData.json`
     );
   }
 
   handle_savePng(data: any) {
     this.canvas.saveAsImage('topology.png');
+  }
+
+  handle_restore(data: any) {
+    this.canvas.scaleTo(1);
+  }
+  handle_fullscreen(data: any) {
+    this.testHttp();
   }
 
   handle_saveSvg(data: any) {
